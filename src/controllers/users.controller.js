@@ -1,108 +1,100 @@
-// Estado en memoria (temporal). En un proyecto real vendría del servicio/DB.
-let users = [
-  {
-    id: "b42f53fa-7b30-4b91-8d36-dc1c6ef27611",
-    name: "Estiven Cataño",
-    email: "estiven@example.com",
-    role: "user",
-    createdAt: "2025-09-12T12:00:00Z"
-  }
-];
+// Importar usuarios desde el controlador de autenticación
+const { usuarios } = require('./autenticacion.controller');
 
-function getUsers(req, res) {
-  const { role, search } = req.query;
+function obtenerUsuarios(req, res) {
+  const { rol, busqueda } = req.query;
 
-  let result = users;
+  let resultado = usuarios;
 
-  if (role) {
-    result = result.filter(u => u.role === role);
+  if (rol) {
+    resultado = resultado.filter(u => u.rol === rol);
   }
 
-  if (search) {
-    const term = String(search).toLowerCase();
-    result = result.filter(u =>
-      (u.name && u.name.toLowerCase().includes(term)) ||
-      (u.email && u.email.toLowerCase().includes(term))
+  if (busqueda) {
+    const termino = String(busqueda).toLowerCase();
+    resultado = resultado.filter(u =>
+      (u.nombre && u.nombre.toLowerCase().includes(termino)) ||
+      (u.email && u.email.toLowerCase().includes(termino))
     );
   }
 
-  res.status(200).json(result);
+  res.status(200).json(resultado);
 }
 
-function getUserById(req, res) {
+function obtenerUsuarioPorId(req, res) {
   const { id } = req.params;
-  const user = users.find(u => u.id === id);
-  if (!user) {
+  const usuario = usuarios.find(u => u.id === id);
+  if (!usuario) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
-  res.status(200).json(user);
+  res.status(200).json(usuario);
 }
 
-function createUser(req, res) {
-  const { name, email, role } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Name y email son requeridos' });
+function crearUsuario(req, res) {
+  const { nombre, email, rol } = req.body;
+  if (!nombre || !email) {
+    return res.status(400).json({ error: 'Nombre y email son requeridos' });
   }
-  const newUser = {
+  const nuevoUsuario = {
     id: `${Date.now()}`,
-    name,
+    nombre,
     email,
-    role: role || 'user',
-    createdAt: new Date().toISOString()
+    rol: rol || 'usuario',
+    fechaCreacion: new Date().toISOString()
   };
-  users.push(newUser);
-  res.status(201).json(newUser);
+  usuarios.push(nuevoUsuario);
+  res.status(201).json(nuevoUsuario);
 }
 
-function updateUser(req, res) {
+function actualizarUsuario(req, res) {
   const { id } = req.params;
-  const { name, email, role } = req.body;
-  const index = users.findIndex(u => u.id === id);
-  if (index === -1) {
+  const { nombre, email, rol } = req.body;
+  const indice = usuarios.findIndex(u => u.id === id);
+  if (indice === -1) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Name y email son requeridos' });
+  if (!nombre || !email) {
+    return res.status(400).json({ error: 'Nombre y email son requeridos' });
   }
-  users[index] = { ...users[index], name, email, role };
-  res.status(200).json(users[index]);
+  usuarios[indice] = { ...usuarios[indice], nombre, email, rol };
+  res.status(200).json(usuarios[indice]);
 }
 
-function patchUser(req, res) {
+function actualizarUsuarioParcial(req, res) {
   const { id } = req.params;
-  const updates = req.body || {};
-  const index = users.findIndex(u => u.id === id);
-  if (index === -1) {
+  const actualizaciones = req.body || {};
+  const indice = usuarios.findIndex(u => u.id === id);
+  if (indice === -1) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
-  if ('email' in updates && !updates.email) {
+  if ('email' in actualizaciones && !actualizaciones.email) {
     return res.status(400).json({ error: 'Email no puede ser vacío' });
   }
-  if ('name' in updates && !updates.name) {
-    return res.status(400).json({ error: 'Name no puede ser vacío' });
+  if ('nombre' in actualizaciones && !actualizaciones.nombre) {
+    return res.status(400).json({ error: 'Nombre no puede ser vacío' });
   }
-  users[index] = { ...users[index], ...updates };
-  res.status(200).json(users[index]);
+  usuarios[indice] = { ...usuarios[indice], ...actualizaciones };
+  res.status(200).json(usuarios[indice]);
 }
 
-function deleteUser(req, res) {
+function eliminarUsuario(req, res) {
   const { id } = req.params;
-  const index = users.findIndex(u => u.id === id);
-  if (index === -1) {
+  const indice = usuarios.findIndex(u => u.id === id);
+  if (indice === -1) {
     return res.status(404).json({ error: 'Usuario no encontrado' });
   }
-  const deletedUser = users.splice(index, 1);
+  const usuarioEliminado = usuarios.splice(indice, 1);
   // 204 No Content para eliminaciones exitosas
   res.status(204).send();
 }
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-  patchUser
+  obtenerUsuarios,
+  obtenerUsuarioPorId,
+  crearUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
+  actualizarUsuarioParcial
 };
 
 

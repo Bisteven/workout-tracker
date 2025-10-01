@@ -1,12 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const { aplicarAutenticacion } = require('../../middleware/auth.middleware');
 
-const usersRoutes = require('./users.routes');
-const workoutsRoutes = require('./workouts.routes');
-const exercisesRoutes = require('./exercises.routes');
+const autenticacionRoutes = require('./autenticacion.routes');
+const usuariosRoutes = require('./users.routes');
+const rutinasRoutes = require('./rutinas.routes');
+const ejerciciosRoutes = require('./ejercicios.routes');
+const asociacionRutinaEjercicioRoutes = require('./asociacion-rutina-ejercicio.routes');
+const horarioEntrenamientoRoutes = require('./horario-entrenamiento.routes');
+const resumenDesempenoProgresoRoutes = require('./resumen-desempeno-progreso.routes');
 
-router.use('/users', usersRoutes);
-router.use('/workouts', workoutsRoutes);
-router.use('/exercises', exercisesRoutes);
+// Rutas públicas (sin autenticación)
+router.use('/autenticacion', autenticacionRoutes);
+
+// Rutas protegidas (requieren autenticación)
+router.use('/usuarios', usuariosRoutes);
+router.use('/rutinas', rutinasRoutes);
+router.use('/ejercicios', ejerciciosRoutes);
+router.use('/rutinas', asociacionRutinaEjercicioRoutes); // Rutas anidadas para ejercicios de rutinas
+router.use('/horario-entrenamiento', horarioEntrenamientoRoutes);
+router.use('/resumen-desempeno-progreso', resumenDesempenoProgresoRoutes);
 
 module.exports = router;
