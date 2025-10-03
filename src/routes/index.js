@@ -7,30 +7,18 @@ const v1Routes = require('./v1');
 router.get('/', (req, res) => {
     res.json({
         "mensaje": "API de Seguimiento de Entrenamientos",
-        "descripcion": "Sistema backend para seguimiento de entrenamientos con autenticación JWT y operaciones CRUD",
+        "descripcion": "Sistema backend para seguimiento de entrenamientos con operaciones CRUD",
         "versiones": ["v1"],
         "endpoints": {
           "v1": "/api/v1"
         },
         "recursos": {
-          "autenticacion": "/api/v1/autenticacion",
           "usuarios": "/api/v1/usuarios",
           "ejercicios": "/api/v1/ejercicios", 
           "rutinas": "/api/v1/rutinas",
           "asociacion-rutina-ejercicio": "/api/v1/rutinas/:rutinaId/ejercicios",
           "horario-entrenamiento": "/api/v1/horario-entrenamiento",
           "resumen-desempeno-progreso": "/api/v1/resumen-desempeno-progreso"
-        },
-        "autenticacion": {
-          "tipo": "JWT",
-          "header": "Authorization: Bearer <token>",
-          "endpoints": {
-            "registro": "POST /api/v1/autenticacion/registro",
-            "login": "POST /api/v1/autenticacion/login",
-            "verificar": "GET /api/v1/autenticacion/verificar",
-            "renovar": "POST /api/v1/autenticacion/renovar",
-            "logout": "POST /api/v1/autenticacion/logout"
-          }
         }
       });
 

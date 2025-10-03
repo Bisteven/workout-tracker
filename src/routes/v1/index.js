@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { aplicarAutenticacion } = require('../../middleware/auth.middleware');
 
-const autenticacionRoutes = require('./autenticacion.routes');
 const usuariosRoutes = require('./users.routes');
 const rutinasRoutes = require('./rutinas.routes');
 const ejerciciosRoutes = require('./ejercicios.routes');
@@ -10,10 +8,7 @@ const asociacionRutinaEjercicioRoutes = require('./asociacion-rutina-ejercicio.r
 const horarioEntrenamientoRoutes = require('./horario-entrenamiento.routes');
 const resumenDesempenoProgresoRoutes = require('./resumen-desempeno-progreso.routes');
 
-// Rutas públicas (sin autenticación)
-router.use('/autenticacion', autenticacionRoutes);
-
-// Rutas protegidas (requieren autenticación)
+// Todas las rutas son públicas (sin autenticación)
 router.use('/usuarios', usuariosRoutes);
 router.use('/rutinas', rutinasRoutes);
 router.use('/ejercicios', ejerciciosRoutes);

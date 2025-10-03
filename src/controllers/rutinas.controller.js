@@ -12,11 +12,13 @@ let rutinas = [
 ];
 
 function listarRutinas(req, res) {
-  const { dificultad, busqueda, limite, categoria } = req.query;
-  const usuarioId = req.usuario.id;
+  const { dificultad, busqueda, limite, categoria, usuarioId } = req.query;
   
-  // Filtrar solo las rutinas del usuario autenticado
-  let resultado = rutinas.filter(r => r.usuarioId === usuarioId);
+  // Filtrar por usuarioId si se proporciona, sino mostrar todas
+  let resultado = rutinas;
+  if (usuarioId) {
+    resultado = resultado.filter(r => r.usuarioId === usuarioId);
+  }
   
   if (dificultad) resultado = resultado.filter(r => r.dificultad === dificultad);
   if (categoria) resultado = resultado.filter(r => r.categoria === categoria);
@@ -31,20 +33,18 @@ function listarRutinas(req, res) {
 
 function obtenerRutina(req, res) {
   const { id } = req.params;
-  const usuarioId = req.usuario.id;
-  const rutina = rutinas.find(r => r.id === id && r.usuarioId === usuarioId);
+  const rutina = rutinas.find(r => r.id === id);
   if (!rutina) return res.status(404).json({ error: 'Rutina no encontrada' });
   res.status(200).json(rutina);
 }
 
 function crearRutina(req, res) {
-  const { nombre, dificultad, descripcion, duracionEstimada, categoria } = req.body;
-  const usuarioId = req.usuario.id;
+  const { nombre, dificultad, descripcion, duracionEstimada, categoria, usuarioId } = req.body;
   
   if (!nombre) return res.status(400).json({ error: 'Nombre es requerido' });
   const rutina = { 
     id: `${Date.now()}`, 
-    usuarioId,
+    usuarioId: usuarioId || 'usuario-default',
     nombre, 
     dificultad: dificultad || 'facil', 
     descripcion: descripcion || '',
@@ -59,8 +59,7 @@ function crearRutina(req, res) {
 function actualizarRutina(req, res) {
   const { id } = req.params;
   const { nombre, dificultad, descripcion, duracionEstimada, categoria } = req.body;
-  const usuarioId = req.usuario.id;
-  const indice = rutinas.findIndex(r => r.id === id && r.usuarioId === usuarioId);
+  const indice = rutinas.findIndex(r => r.id === id);
   if (indice === -1) return res.status(404).json({ error: 'Rutina no encontrada' });
   if (!nombre) return res.status(400).json({ error: 'Nombre es requerido' });
   rutinas[indice] = { ...rutinas[indice], nombre, dificultad, descripcion, duracionEstimada, categoria };
@@ -70,8 +69,7 @@ function actualizarRutina(req, res) {
 function actualizarRutinaParcial(req, res) {
   const { id } = req.params;
   const actualizaciones = req.body || {};
-  const usuarioId = req.usuario.id;
-  const indice = rutinas.findIndex(r => r.id === id && r.usuarioId === usuarioId);
+  const indice = rutinas.findIndex(r => r.id === id);
   if (indice === -1) return res.status(404).json({ error: 'Rutina no encontrada' });
   rutinas[indice] = { ...rutinas[indice], ...actualizaciones };
   res.status(200).json(rutinas[indice]);
@@ -79,8 +77,7 @@ function actualizarRutinaParcial(req, res) {
 
 function eliminarRutina(req, res) {
   const { id } = req.params;
-  const usuarioId = req.usuario.id;
-  const indice = rutinas.findIndex(r => r.id === id && r.usuarioId === usuarioId);
+  const indice = rutinas.findIndex(r => r.id === id);
   if (indice === -1) return res.status(404).json({ error: 'Rutina no encontrada' });
   rutinas.splice(indice, 1);
   res.status(204).send();

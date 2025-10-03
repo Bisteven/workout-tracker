@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { verificarAutenticacion } = require('../../controllers/autenticacion.controller');
 const {
   obtenerUsuarios,
   obtenerUsuarioPorId,
@@ -9,9 +8,6 @@ const {
   eliminarUsuario,
   actualizarUsuarioParcial
 } = require('../../controllers/users.controller');
-
-// Aplicar middleware de autenticación a todas las rutas
-router.use(verificarAutenticacion);
   
 // GET /api/v1/usuarios (con filtros)
 router.get('/', obtenerUsuarios);

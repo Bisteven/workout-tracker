@@ -1,5 +1,13 @@
-// Importar usuarios desde el controlador de autenticación
-const { usuarios } = require('./autenticacion.controller');
+// Array de usuarios en memoria (simula base de datos)
+let usuarios = [
+  {
+    id: "b42f53fa-7b30-4b91-8d36-dc1c6ef27611",
+    nombre: "Estiven Cataño",
+    email: "estiven@example.com",
+    rol: "usuario",
+    fechaCreacion: "2025-09-12T12:00:00Z"
+  }
+];
 
 function obtenerUsuarios(req, res) {
   const { rol, busqueda } = req.query;
